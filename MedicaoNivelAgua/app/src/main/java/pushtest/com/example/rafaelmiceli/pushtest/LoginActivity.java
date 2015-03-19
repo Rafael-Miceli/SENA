@@ -78,8 +78,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
         if (mTxtPassword.getText().toString().equals("") ||
                 mTxtUsername.getText().toString().equals("")) {
-            //We're just logging this here, we should show something to the user
-            Log.w(TAG, "Username or password not entered");
             return false;
         }
 
@@ -96,13 +94,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                             mAuthService.setUserAndSaveData(jsonObject);
                             Intent loggedInIntent = new Intent(getApplicationContext(), MyActivity.class);
                             startActivity(loggedInIntent);
-                        } else {
-                            //Erro ocorrendo neste momento
-
-                            Log.e(TAG, "Error loggin in: " + exception.getMessage());
                         }
                     } catch (Exception ex) {
-                        Log.e(TAG, "Error loggin in em callback: " + ex.getMessage());
                         Toast.makeText(mContext, "Falha com realização de login: Verifique sua conexão com a Internet", Toast.LENGTH_LONG).show();
                         runOnUiThread(new Runnable() {
                             @Override
@@ -116,7 +109,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             });
         }
         catch (Exception ex) {
-            Log.e(TAG, "Error loggin in: " + ex.getMessage());
             Toast.makeText(mContext, "Falha com realização de login: Verifique sua conexão com a Internet", Toast.LENGTH_LONG).show();
             return false;
         }

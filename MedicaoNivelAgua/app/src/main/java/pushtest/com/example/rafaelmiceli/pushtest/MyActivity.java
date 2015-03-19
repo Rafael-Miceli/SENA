@@ -133,7 +133,6 @@ public class MyActivity extends Activity {
             public void onCompleted(JsonElement jsonElement, int i, Exception e, ServiceFilterResponse serviceFilterResponse) {
                 try {
                     if (e != null) {
-                        Log.e("ErrorActivity", "Error Azure Activity from WaterLevelService - " + e.getMessage());
                         return;
                     }
 
@@ -148,7 +147,6 @@ public class MyActivity extends Activity {
                     updateViews(latestWaterDistance[0]);
                 }
                 catch (Exception exception) {
-                    Log.e("ErrorActivity", "Error Azure Activity in Activity - " + exception.getMessage());
                 }
             }
         });

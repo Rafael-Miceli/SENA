@@ -36,7 +36,6 @@ public class WaterLevelService {
             mClient = new MobileServiceClient("https://arduinoapp.azure-mobile.net/", "QkTMsFHSEaNGuiKVsywYYHpHnIHMUB64", mContext);
 
         } catch (MalformedURLException e) {
-            Log.e("WaterLevelService", "There was an error creating the Mobile Service.  Verify the URL");
         }
     }
 
@@ -52,7 +51,6 @@ public class WaterLevelService {
                     if (mClientTableData != null)
                         mClientTableData.orderBy("__createdAt", QueryOrder.Descending).top(1).execute(callback);
                 } catch (Exception exception) {
-                    Log.e("ErrorAuthService", "Error Azure AuthService - " + exception.getMessage());
                 }
                 return null;
             }

@@ -85,7 +85,6 @@ public class AuthService {
             String connectionString = "Endpoint=sb://arduinoapphub-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=c2D7nWLIc+3h8CCrLvsPvpXUQkrmmSGJe9UdWiL/xcU=";
             hub = new NotificationHub("arduinoapphub", connectionString, mContext);
         } catch (MalformedURLException e) {
-            Log.e(TAG, "There was an error creating the Mobile Service.  Verify the URL");
         }
     }
 
@@ -211,16 +210,12 @@ public class AuthService {
                     String regid = gcm.register(SENDER_ID);
                     hub.register(regid, clients.toArray(new String[clients.size()]));
                 } catch (Exception e) {
-                    Log.e("MainActivity", "Failed to register - " + e.getMessage());
                     return e;
                 }
                 return null;
             }
 
             protected void onPostExecute(Object result) {
-                if (result != null)
-                    Toast.makeText(mContext, result.toString(), Toast.LENGTH_LONG).show();
-
                 String message = "Bem-vindo as informacões do reservatório de: " + clients.toString();
                 Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
             }
@@ -235,7 +230,6 @@ public class AuthService {
                     String regid = gcm.register(SENDER_ID);
                     hub.unregister();
                 } catch (Exception e) {
-                    Log.e("MainActivity", "Failed to unregister - " + e.getMessage());
                     return e;
                 }
                 return null;
@@ -330,13 +324,6 @@ public class AuthService {
 
                     try {
 
-                        if (exception != null) {
-                            //Error begining here : Error while processing request
-
-                            Log.e(TAG, "MyServiceFilter onResponse Exception: " + exception.getMessage());
-                        }
-
-
                         StatusLine status = response.getStatus();
                         int statusCode = status.getStatusCode();
                         if (statusCode == 401) {
@@ -373,13 +360,11 @@ public class AuthService {
                                                     try {
                                                         request.setUrl(uriBuilder.build().toString());
                                                     } catch (URISyntaxException e) {
-                                                        Log.e(TAG, "Couldn't set request's new url: " + e.getMessage());
                                                         e.printStackTrace();
                                                     }
                                                     latch.countDown();
 
                                                 } else {
-                                                    Log.e(TAG, "User did not login successfully after 401");
                                                     //Kick user back to login screen
                                                     logout(true);
                                                 }
@@ -391,7 +376,6 @@ public class AuthService {
                                 try {
                                     latch.await();
                                 } catch (InterruptedException e) {
-                                    Log.e(TAG, "Interrupted exception: " + e.getMessage());
                                     return;
                                 }
 
@@ -406,7 +390,6 @@ public class AuthService {
                         }
                     }
                     catch(Exception ex) {
-                        Log.e(TAG, "MyServiceFilter onResponse Exception: " + exception.getMessage());
                     }
                 }
             });

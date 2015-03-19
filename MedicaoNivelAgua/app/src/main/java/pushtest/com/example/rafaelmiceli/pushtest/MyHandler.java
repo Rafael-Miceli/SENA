@@ -66,7 +66,7 @@ public class MyHandler extends NotificationsHandler {
                         .setContentTitle("Nível de água muito baixo!")
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
-                        .setContentText(msg)
+                        .setContentText(msg + "cm abaixo do nível máximo")
                         .setSound(notificationSound);
 
         mBuilder.setContentIntent(contentIntent);

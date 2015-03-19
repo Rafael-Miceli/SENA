@@ -4,10 +4,10 @@ android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
     defaultConfig {
-        applicationId 'pushtest.com.example.rafaelmiceli.mjrmedicaonivelagua'
+        applicationId 'com.rafaelmiceli.sena'
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 0
+        versionCode 1
         versionName '0.1'
 
         sourceSets {
