@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -40,9 +40,23 @@ public class MyActivity extends Activity {
         setContentView(R.layout.activity_my);
 
         mChart = (BarChart) findViewById(R.id.chart1);
-
         mTxtCmDown = (TextView) findViewById(R.id.txtCmDown);
 
+        configureBarChart();
+
+        //Neste momento vai ser bom chamar um método para buscar os tanques
+        //Que este cliente possui acesso
+
+        //setTanksObjectsFromCloud();
+
+        setCriticalLevel();
+
+        Integer value = getLatestWaterDistance();
+
+        setData(value);
+    }
+
+    private void configureBarChart() {
         mChart.setDescription("");
         mChart.setDrawValueAboveBar(true);
         mChart.setMaxVisibleValueCount(2);
@@ -70,14 +84,12 @@ public class MyActivity extends Activity {
 
         mChart.setValueTypeface(tf);
 
-        Integer value = getLatestWaterDistance();
-
-        setData(value);
-
         Legend l = mChart.getLegend();
         l.setLegendLabels(new String[] {"Nível d'água"});
         l.setEnabled(true);
+    }
 
+    public void setTanksObjectsFromCloud(){
     }
 
     private void setData(float range) {
@@ -99,29 +111,6 @@ public class MyActivity extends Activity {
         BarData data = new BarData(xVals, dataSets);
 
         mChart.setData(data);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_my, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            AuthService.getInstance(this).logout(true);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public Integer getLatestWaterDistance() {
@@ -156,11 +145,63 @@ public class MyActivity extends Activity {
         return 200;
     }
 
+    private void setCriticalLevel() {
+
+
+
+        WaterLevelService.getInstance(this).setCriticalLevel(new TableJsonQueryCallback() {
+            @Override
+            public void onCompleted(JsonElement jsonElement, int i, Exception e, ServiceFilterResponse serviceFilterResponse) {
+                try {
+                    if (e != null) {
+                        Log.e("ErrorActivity", "Error Azure Activity from WaterLevelService - " + e.getMessage());
+                        return;
+                    }
+
+                    JsonArray results = jsonElement.getAsJsonArray();
+
+                    for (JsonElement item : results){
+
+                        MyHandler._criticalWaterLevel = item.getAsJsonObject().getAsJsonPrimitive("criticallevel").getAsInt();
+
+                        Toast.makeText(mContext, MyHandler._criticalWaterLevel.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }
+                catch (Exception exception) {
+                    Log.e("ErrorActivity", "Error Azure Activity in Activity - " + exception.getMessage());
+                }
+            }
+        });
+    }
+
     public void updateViews(Integer latestWaterDistance) {
         setData((200 - latestWaterDistance));
         mTxtCmDown.setText(latestWaterDistance.toString());
         mChart.invalidate();
         mTxtCmDown.invalidate();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_my, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_logout) {
+            AuthService.getInstance(this).logout(true);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

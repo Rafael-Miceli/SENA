@@ -20,7 +20,7 @@ import com.microsoft.windowsazure.mobileservices.TableJsonOperationCallback;
 
 public class LoginActivity extends Activity implements View.OnClickListener {
 
-    private final String TAG = "MainActivity";
+    private final String TAG = "LoginActivity";
 
     private Button login_button;
     protected AuthService mAuthService;

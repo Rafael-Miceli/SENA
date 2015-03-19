@@ -9,7 +9,12 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.ArrayMap;
+import android.util.Pair;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rafael.miceli on 09/12/2014.
@@ -19,7 +24,8 @@ public class MyHandler extends NotificationsHandler {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
     Context context;
-    private Integer _criticalWaterLevel = 20;
+    public static Integer _criticalWaterLevel = 20;
+    public static List<Pair<String, Integer>> mCriticalLevels = new ArrayList<>();
 
 
     @Override
