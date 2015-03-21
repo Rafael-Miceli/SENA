@@ -427,7 +427,7 @@ myGLCD.printNumI(cm[1],170,14,3);
     
 
 
- if (dist1 != ultima_distancia)
+ //if (dist1 != ultima_distancia)
  // { 
     
   //  ultima_distancia = dist1;
