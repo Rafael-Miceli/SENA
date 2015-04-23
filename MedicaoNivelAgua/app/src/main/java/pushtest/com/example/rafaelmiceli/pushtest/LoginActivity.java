@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 import com.google.gson.JsonObject;
 import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.TableJsonOperationCallback;
@@ -21,6 +23,9 @@ import com.microsoft.windowsazure.mobileservices.TableJsonOperationCallback;
 public class LoginActivity extends Activity implements View.OnClickListener {
 
     private final String TAG = "LoginActivity";
+
+    @Inject
+    UserService userService;
 
     private Button login_button;
     protected AuthService mAuthService;
@@ -82,6 +87,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             Log.w(TAG, "Username or password not entered");
             return false;
         }
+
+        userService.login("mjr@mjr.com", "12345678");
 
         try {
             mAuthService.login(mTxtUsername.getText().toString(), mTxtPassword.getText().toString(), new TableJsonOperationCallback() {
