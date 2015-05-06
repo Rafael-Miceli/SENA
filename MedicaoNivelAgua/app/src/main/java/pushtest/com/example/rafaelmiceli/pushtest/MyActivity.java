@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,34 +32,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pushtest.com.example.rafaelmiceli.pushtest.Models.Tank;
+import pushtest.com.example.rafaelmiceli.pushtest.Slider.TankPageAdapter;
 
 
-public class MyActivity extends Activity {
+public class MyActivity extends FragmentActivity {
 
     protected BarChart mChart;
-    private Context mContext = this;
+    private Context context = this;
     private TextView mTxtCmDown;
+
+    TankPageAdapter mTankPageAdapter;
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        mChart = (BarChart) findViewById(R.id.chart1);
-        mTxtCmDown = (TextView) findViewById(R.id.txtCmDown);
+        ArrayList<Tank> tanks = getIntent().getExtras().getParcelableArrayList("tanks");
 
-        configureBarChart();
+        mTankPageAdapter = new TankPageAdapter(getSupportFragmentManager(), context, tanks);
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mTankPageAdapter);
+
+
+        //mChart = (BarChart) findViewById(R.id.chart1);
+        //mTxtCmDown = (TextView) findViewById(R.id.txtCmDown);
+
+        //configureBarChart();
 
         //Neste momento vai ser bom chamar um método para buscar os tanques
         //Que este cliente possui acesso
 
         //setTanksObjectsFromCloud();
 
-        setCriticalLevel();
+        //setCriticalLevel();
 
-        Integer value = getLatestWaterDistance();
+        //Integer value = getLatestWaterDistance();
 
-        setData(value);
+        //setData(value);
     }
 
     private void configureBarChart() {
@@ -165,7 +180,6 @@ public class MyActivity extends Activity {
     private void setCriticalLevel() {
 
 
-
         WaterLevelService.getInstance(this).setCriticalLevel(new TableJsonQueryCallback() {
             @Override
             public void onCompleted(JsonElement jsonElement, int i, Exception e, ServiceFilterResponse serviceFilterResponse) {
@@ -181,7 +195,7 @@ public class MyActivity extends Activity {
 
                         MyHandler._criticalWaterLevel = item.getAsJsonObject().getAsJsonPrimitive("criticallevel").getAsInt();
 
-                        Toast.makeText(mContext, MyHandler._criticalWaterLevel.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, MyHandler._criticalWaterLevel.toString(), Toast.LENGTH_LONG).show();
                     }
                 }
                 catch (Exception exception) {
@@ -224,13 +238,13 @@ public class MyActivity extends Activity {
     @Override
     public void onResume(){
         super.onResume();
-        mContext.registerReceiver(mMessageReceiver, new IntentFilter("water_level"));
+        context.registerReceiver(mMessageReceiver, new IntentFilter("water_level"));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mContext.unregisterReceiver(mMessageReceiver);
+        context.unregisterReceiver(mMessageReceiver);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
