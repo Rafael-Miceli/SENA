@@ -115,14 +115,7 @@ public class AuthService {
         if (provider.equals("Custom")) {
             mProvider = null;
             mIsCustomAuthProvider = true;
-        } else if (provider.equals("Facebook"))
-            mProvider = MobileServiceAuthenticationProvider.Facebook;
-        else if (provider.equals("Twitter"))
-            mProvider = MobileServiceAuthenticationProvider.Twitter;
-        else if (provider.equals("MicrosoftAccount"))
-            mProvider = MobileServiceAuthenticationProvider.MicrosoftAccount;
-        else if (provider.equals("Google"))
-            mProvider = MobileServiceAuthenticationProvider.Google;
+        }
     }
 
     public void setUserAndSaveData(JsonObject jsonObject) {

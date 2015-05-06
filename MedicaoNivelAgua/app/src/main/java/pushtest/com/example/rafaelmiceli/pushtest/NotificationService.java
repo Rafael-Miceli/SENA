@@ -49,7 +49,7 @@ public class NotificationService {
                     String regid = gcm.register(SENDER_ID);
                     hub.register(regid, clients.toArray(new String[clients.size()]));
                 } catch (Exception e) {
-                    Log.e("MainActivity", "Failed to register - " + e.getMessage());
+                    Log.e("LoginActivity", "Failed to register - " + e.getMessage());
                     return e;
                 }
                 return null;

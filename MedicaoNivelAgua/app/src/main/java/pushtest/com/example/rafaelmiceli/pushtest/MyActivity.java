@@ -85,8 +85,18 @@ public class MyActivity extends Activity {
         mChart.setValueTypeface(tf);
 
         Legend l = mChart.getLegend();
-        l.setLegendLabels(new String[] {"Nível d'água"});
-        l.setEnabled(true);
+        if (l != null) {
+            l.setLegendLabels(new String[] {"Nível d'água"});
+            l.setEnabled(true);
+        }
+        else {
+            l = new Legend();
+            String[] labels = l.getLegendLabels();
+            if (labels == null)
+                labels = new String[] {"Nível d'água"};
+
+            l.setEnabled(true);
+        }
     }
 
     public void setTanksObjectsFromCloud(){
