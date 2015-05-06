@@ -9,11 +9,13 @@ import android.os.Parcelable;
 public class Tank implements Parcelable {
 
     private String Name;
+    private String Id;
     private Integer CriticalLevel = 0;
     private Integer Level = 0;
 
     public Tank(Parcel parcel) {
         Name = parcel.readString();
+        Id = parcel.readString();
         CriticalLevel = parcel.readInt();
         Level = parcel.readInt();
     }
@@ -32,6 +34,14 @@ public class Tank implements Parcelable {
 
     public void setCriticalLevel(Integer CriticalLevel) {
         this.CriticalLevel = CriticalLevel;
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        this.Id = id;
     }
 
     public Integer getLevel() {
@@ -55,6 +65,7 @@ public class Tank implements Parcelable {
             Level = 0;
 
         dest.writeString(Name);
+        dest.writeString(Id);
         dest.writeInt(CriticalLevel);
         dest.writeInt(Level);
     }

@@ -140,6 +140,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 notificationService.subscribeToClient(clients);
 
                 Intent loggedInIntent = new Intent(getApplicationContext(), MyActivity.class);
+                loggedInIntent.putExtra("tanks", client.getTanks());
                 startActivity(loggedInIntent);
             }
             catch (Exception ex) {

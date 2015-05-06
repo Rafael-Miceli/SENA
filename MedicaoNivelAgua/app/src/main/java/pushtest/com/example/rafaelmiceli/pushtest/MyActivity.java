@@ -26,6 +26,9 @@ import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.TableJsonQueryCallback;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import pushtest.com.example.rafaelmiceli.pushtest.Models.Tank;
 
 
 public class MyActivity extends Activity {
@@ -127,7 +130,11 @@ public class MyActivity extends Activity {
 
         final Integer[] latestWaterDistance = {0};
 
-        WaterLevelService.getInstance(this).getLatestLevelFromAzure(new TableJsonQueryCallback() {
+        List<Tank> tanks = getIntent().getExtras().getParcelableArrayList("tanks");
+
+        String tankId = tanks.get(0).getId();
+
+        WaterLevelService.getInstance(this).getLatestLevelFromAzure(tankId, new TableJsonQueryCallback() {
             @Override
             public void onCompleted(JsonElement jsonElement, int i, Exception e, ServiceFilterResponse serviceFilterResponse) {
                 try {
@@ -141,7 +148,7 @@ public class MyActivity extends Activity {
 
                     for (JsonElement item : results){
 
-                       latestWaterDistance[0] = item.getAsJsonObject().getAsJsonPrimitive("Nivel").getAsInt();
+                       latestWaterDistance[0] = item.getAsJsonObject().getAsJsonPrimitive("level").getAsInt();
                     }
 
                     updateViews(latestWaterDistance[0]);

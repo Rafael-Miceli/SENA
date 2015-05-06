@@ -40,6 +40,7 @@ public class WaterLevelService {
 
             mClientsTanksTable = mMobileServiceClient.getTable("ClientsTanks");
             mClientsTable = mMobileServiceClient.getTable("Clients");
+            mClientTableData = mMobileServiceClient.getTable("TankLevel");
 
         } catch (MalformedURLException e) {
             Log.e("WaterLevelService", "There was an error creating the Mobile Service.  Verify the URL");
@@ -56,13 +57,13 @@ public class WaterLevelService {
     }
 
 
-    public void getLatestLevelFromAzure(final TableJsonQueryCallback callback){
+    public void getLatestLevelFromAzure(final String tankId, final TableJsonQueryCallback callback){
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
                     if (mClientTableData != null)
-                        mClientTableData.orderBy("__createdAt", QueryOrder.Descending).top(1).execute(callback);
+                        mClientTableData.where().field("idclienttank").eq(tankId).orderBy("__createdAt", QueryOrder.Descending).top(1).execute(callback);
                 } catch (Exception exception) {
                     Log.e("ErrorAuthService", "Error Azure AuthService - " + exception.getMessage());
                 }
