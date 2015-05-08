@@ -12,6 +12,11 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
+import java.util.ArrayList;
 
 import pushtest.com.example.rafaelmiceli.pushtest.MyValueFormatter;
 import pushtest.com.example.rafaelmiceli.pushtest.R;
@@ -22,7 +27,9 @@ import pushtest.com.example.rafaelmiceli.pushtest.R;
 public class TankFragment extends Fragment {
 
     public final static String TANK_NAME = "Reservatorio";
-    public final static String TANK_CRITICAL_LEVEL = "Valor";
+    public final static String TANK_CRITICAL_LEVEL = "ValorCritico";
+    public final static String TANK_LEVEL = "Valor";
+
     private String mTankName;
     private int mTankValue;
 
@@ -44,10 +51,13 @@ public class TankFragment extends Fragment {
         if (arguments != null) {
             mTankName = arguments.getString(TANK_NAME);
             mTankValue = arguments.getInt(TANK_CRITICAL_LEVEL);
+            Integer level = arguments.getInt(TANK_LEVEL);
 
             initializeControls(theView);
 
             configureBarChart(theView);
+
+            setData((200 - level), mTankName);
 
             displayValues(mTankName, mTankValue);
         }
@@ -96,6 +106,27 @@ public class TankFragment extends Fragment {
 
             l.setEnabled(true);
         }
+    }
+
+    private void setData(float range, String tankname) {
+
+        ArrayList<String> xVals = new ArrayList<String>();
+
+        xVals.add(tankname);
+
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+
+        yVals1.add(new BarEntry(range, 0));
+
+        BarDataSet set1 = new BarDataSet(yVals1, "Nível d'água");
+        set1.setBarSpacePercent(35f);
+
+        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+        dataSets.add(set1);
+
+        BarData data = new BarData(xVals, dataSets);
+
+        mChart.setData(data);
     }
 
     private void initializeControls(View theView) {

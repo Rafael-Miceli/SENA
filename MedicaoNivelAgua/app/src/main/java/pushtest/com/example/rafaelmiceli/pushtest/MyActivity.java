@@ -56,7 +56,6 @@ public class MyActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mTankPageAdapter);
 
-
         //mChart = (BarChart) findViewById(R.id.chart1);
         //mTxtCmDown = (TextView) findViewById(R.id.txtCmDown);
 
@@ -74,51 +73,7 @@ public class MyActivity extends FragmentActivity {
         //setData(value);
     }
 
-    private void configureBarChart() {
-        mChart.setDescription("");
-        mChart.setDrawValueAboveBar(true);
-        mChart.setMaxVisibleValueCount(2);
-        mChart.setPinchZoom(false);
-        mChart.setDrawGridBackground(false);
-        mChart.setValueTextSize(10f);
 
-        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTypeface(tf);
-        xAxis.setDrawGridLines(false);
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTypeface(tf);
-        leftAxis.setLabelCount(8);
-
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        rightAxis.setTypeface(tf);
-        rightAxis.setLabelCount(8);
-
-        mChart.setValueFormatter(new MyValueFormatter());
-
-        mChart.setValueTypeface(tf);
-
-        Legend l = mChart.getLegend();
-        if (l != null) {
-            l.setLegendLabels(new String[] {"Nível d'água"});
-            l.setEnabled(true);
-        }
-        else {
-            l = new Legend();
-            String[] labels = l.getLegendLabels();
-            if (labels == null)
-                labels = new String[] {"Nível d'água"};
-
-            l.setEnabled(true);
-        }
-    }
-
-    public void setTanksObjectsFromCloud(){
-    }
 
     private void setData(float range) {
 

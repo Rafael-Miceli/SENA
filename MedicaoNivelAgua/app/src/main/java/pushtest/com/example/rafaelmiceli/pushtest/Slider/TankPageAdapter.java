@@ -30,6 +30,7 @@ public class TankPageAdapter extends FragmentPagerAdapter {
         Bundle arguments = new Bundle();
         arguments.putString(TankFragment.TANK_NAME, mTanks.get(position).getName());
         arguments.putInt(TankFragment.TANK_CRITICAL_LEVEL, mTanks.get(position).getCriticalLevel());
+        arguments.putInt(TankFragment.TANK_LEVEL, mTanks.get(position).getLevel());
 
         TankFragment tankFragment = new TankFragment();
         tankFragment.setArguments(arguments);
