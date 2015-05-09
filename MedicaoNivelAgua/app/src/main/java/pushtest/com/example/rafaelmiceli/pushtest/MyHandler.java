@@ -25,7 +25,6 @@ public class MyHandler extends NotificationsHandler {
     private NotificationManager mNotificationManager;
     Context context;
     public static Integer _criticalWaterLevel = 20;
-    public static List<Pair<String, Integer>> mCriticalLevels = new ArrayList<>();
 
 
     @Override
