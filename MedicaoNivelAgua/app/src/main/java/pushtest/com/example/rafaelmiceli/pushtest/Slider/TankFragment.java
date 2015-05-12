@@ -1,5 +1,9 @@
 package pushtest.com.example.rafaelmiceli.pushtest.Slider;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -37,6 +41,8 @@ public class TankFragment extends Fragment {
     private TextView mTxtCmDown;
     private TextView txtTitle;
 
+    private Context context;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,8 @@ public class TankFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View theView = inflater.inflate(R.layout.fragment_tank, container, false);
 
+        context = theView.getContext();
+
         Bundle arguments = getArguments();
         if (arguments != null) {
             mTankName = arguments.getString(TANK_NAME);
@@ -55,7 +63,7 @@ public class TankFragment extends Fragment {
 
             initializeControls(theView);
 
-            configureBarChart(theView);
+            configureBarChart();
 
             setData((200 - level), mTankName);
 
@@ -65,7 +73,13 @@ public class TankFragment extends Fragment {
         return theView;
     }
 
-    private void configureBarChart(View theView) {
+    private void initializeControls(View theView) {
+        mChart = (BarChart)  theView.findViewById(R.id.chart1);
+        mTxtCmDown = (TextView) theView.findViewById(R.id.txtCmDown);
+        txtTitle = (TextView) theView.findViewById(R.id.txtTitle);
+    }
+
+    private void configureBarChart() {
         mChart.setDescription("");
         mChart.setDrawValueAboveBar(true);
         mChart.setMaxVisibleValueCount(2);
@@ -73,7 +87,7 @@ public class TankFragment extends Fragment {
         mChart.setDrawGridBackground(false);
         mChart.setValueTextSize(10f);
 
-        Typeface tf = Typeface.createFromAsset(theView.getContext().getAssets(), "OpenSans-Regular.ttf");
+        Typeface tf = Typeface.createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -129,14 +143,39 @@ public class TankFragment extends Fragment {
         mChart.setData(data);
     }
 
-    private void initializeControls(View theView) {
-        mChart = (BarChart)  theView.findViewById(R.id.chart1);
-        mTxtCmDown = (TextView) theView.findViewById(R.id.txtCmDown);
-        txtTitle = (TextView) theView.findViewById(R.id.txtTitle);
-    }
-
     private void displayValues(final String tankName, int tankValue) {
         txtTitle.setText("Queda de " + tankName + " em cm");
         //mTankValueTextView.setText(String.valueOf(tankValue));
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        context.registerReceiver(mMessageReceiver, new IntentFilter("water_level"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        context.unregisterReceiver(mMessageReceiver);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String level = intent.getStringExtra("level");
+            String tankName = intent.getStringExtra("tankName");
+
+            if(tankName.equals(mTankName))
+                updateViews(Integer.parseInt(level));
+        }
+    };
+
+    public void updateViews(Integer latestWaterDistance) {
+        setData((200 - latestWaterDistance), mTankName);
+        //mTxtCmDown.setText(latestWaterDistance.toString());
+        mChart.invalidate();
+        //mTxtCmDown.invalidate();
     }
 }

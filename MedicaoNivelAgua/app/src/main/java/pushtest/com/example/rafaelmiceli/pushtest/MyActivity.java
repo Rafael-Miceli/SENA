@@ -81,12 +81,7 @@ public class MyActivity extends FragmentActivity {
     }
 
 
-    public void updateViews(Integer latestWaterDistance) {
-        setData((200 - latestWaterDistance));
-        mTxtCmDown.setText(latestWaterDistance.toString());
-        mChart.invalidate();
-        mTxtCmDown.invalidate();
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,26 +105,4 @@ public class MyActivity extends FragmentActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        context.registerReceiver(mMessageReceiver, new IntentFilter("water_level"));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        context.unregisterReceiver(mMessageReceiver);
-    }
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String message = intent.getStringExtra("azureMessage");
-
-            updateViews(Integer.parseInt(message));
-        }
-    };
 }

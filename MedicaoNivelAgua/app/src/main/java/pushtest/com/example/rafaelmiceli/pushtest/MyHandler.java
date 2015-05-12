@@ -70,11 +70,10 @@ public class MyHandler extends NotificationsHandler {
             }
         }
 
-
         if (isCriticalWaterLevel(idTank, level))
             sendNotification(tankName, level);
 
-        updateCharts(level);
+        updateCharts(level, tankName);
     }
 
     private boolean isCriticalWaterLevel(String idTank, String level) {
@@ -85,11 +84,12 @@ public class MyHandler extends NotificationsHandler {
 
     }
 
-    private void updateCharts(String azureMessage) {
+    private void updateCharts(String level, String tankName) {
 
         Intent intent = new Intent("water_level");
 
-        intent.putExtra("azureMessage", azureMessage);
+        intent.putExtra("level", level);
+        intent.putExtra("tankName", tankName);
 
         context.sendBroadcast(intent);
     }
