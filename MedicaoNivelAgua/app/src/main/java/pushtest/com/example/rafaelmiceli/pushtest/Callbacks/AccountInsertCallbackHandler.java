@@ -2,6 +2,7 @@ package pushtest.com.example.rafaelmiceli.pushtest.Callbacks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 
 import com.google.gson.JsonObject;
 import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
@@ -38,11 +39,11 @@ public class AccountInsertCallbackHandler implements TableJsonOperationCallback 
             String token = jsonObject.getAsJsonPrimitive("token").getAsString();
 
             User receivedUser = new User();
-            receivedUser.client = client;
+            receivedUser.Client = client;
 
             user[0] = receivedUser;
 
-            intent.putExtra("client", client);
+            intent.putExtra("client", (Parcelable)client);
             intent.putExtra("userId", userId);
             intent.putExtra("token", token);
             context.sendBroadcast(intent);

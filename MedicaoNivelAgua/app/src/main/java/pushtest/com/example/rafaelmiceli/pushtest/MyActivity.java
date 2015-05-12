@@ -39,10 +39,10 @@ public class MyActivity extends FragmentActivity {
 
     protected BarChart mChart;
     private Context context = this;
-    private TextView mTxtCmDown;
 
     TankPageAdapter mTankPageAdapter;
     ViewPager mViewPager;
+    private TextView mTxtCmDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,22 +55,6 @@ public class MyActivity extends FragmentActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mTankPageAdapter);
-
-        //mChart = (BarChart) findViewById(R.id.chart1);
-        //mTxtCmDown = (TextView) findViewById(R.id.txtCmDown);
-
-        //configureBarChart();
-
-        //Neste momento vai ser bom chamar um método para buscar os tanques
-        //Que este cliente possui acesso
-
-        //setTanksObjectsFromCloud();
-
-        //setCriticalLevel();
-
-        //Integer value = getLatestWaterDistance();
-
-        //setData(value);
     }
 
 
@@ -96,69 +80,6 @@ public class MyActivity extends FragmentActivity {
         mChart.setData(data);
     }
 
-    public Integer getLatestWaterDistance() {
-
-        final Integer[] latestWaterDistance = {0};
-
-        List<Tank> tanks = getIntent().getExtras().getParcelableArrayList("tanks");
-
-        String tankId = tanks.get(0).getId();
-
-        WaterLevelService.getInstance(this).getLatestLevelFromAzure(tankId, new TableJsonQueryCallback() {
-            @Override
-            public void onCompleted(JsonElement jsonElement, int i, Exception e, ServiceFilterResponse serviceFilterResponse) {
-                try {
-                    if (e != null) {
-                        Log.e("ErrorActivity", "Error Azure Activity from WaterLevelService - " + e.getMessage());
-                        return;
-                    }
-
-                    JsonArray results = jsonElement.getAsJsonArray();
-
-
-                    for (JsonElement item : results){
-
-                       latestWaterDistance[0] = item.getAsJsonObject().getAsJsonPrimitive("level").getAsInt();
-                    }
-
-                    updateViews(latestWaterDistance[0]);
-                }
-                catch (Exception exception) {
-                    Log.e("ErrorActivity", "Error Azure Activity in Activity - " + exception.getMessage());
-                }
-            }
-        });
-
-        return 200;
-    }
-
-    private void setCriticalLevel() {
-
-
-        WaterLevelService.getInstance(this).setCriticalLevel(new TableJsonQueryCallback() {
-            @Override
-            public void onCompleted(JsonElement jsonElement, int i, Exception e, ServiceFilterResponse serviceFilterResponse) {
-                try {
-                    if (e != null) {
-                        Log.e("ErrorActivity", "Error Azure Activity from WaterLevelService - " + e.getMessage());
-                        return;
-                    }
-
-                    JsonArray results = jsonElement.getAsJsonArray();
-
-                    for (JsonElement item : results){
-
-                        MyHandler._criticalWaterLevel = item.getAsJsonObject().getAsJsonPrimitive("criticallevel").getAsInt();
-
-                        Toast.makeText(context, MyHandler._criticalWaterLevel.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }
-                catch (Exception exception) {
-                    Log.e("ErrorActivity", "Error Azure Activity in Activity - " + exception.getMessage());
-                }
-            }
-        });
-    }
 
     public void updateViews(Integer latestWaterDistance) {
         setData((200 - latestWaterDistance));

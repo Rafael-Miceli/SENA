@@ -13,8 +13,14 @@ import android.util.ArrayMap;
 import android.util.Pair;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import pushtest.com.example.rafaelmiceli.pushtest.Models.Tank;
+import pushtest.com.example.rafaelmiceli.pushtest.Models.User;
+import pushtest.com.example.rafaelmiceli.pushtest.Repositories.InternalStorage;
 
 /**
  * Created by rafael.miceli on 09/12/2014.
@@ -26,23 +32,56 @@ public class MyHandler extends NotificationsHandler {
     Context context;
     public static Integer _criticalWaterLevel = 20;
 
+    private HashMap<String, Integer> _criticalsLevels;
+    private ArrayList<Tank> _tanks;
+
+    public void initializeHandlerData() {
+        try {
+            User user = (User)InternalStorage.readObject(context, "user");
+
+            _criticalsLevels = new HashMap<>();
+            _tanks = new ArrayList<>();
+            for (Tank tank: user.Client.getTanks() ) {
+                _criticalsLevels.put(tank.getId(), tank.getCriticalLevel());
+                _tanks.add(tank);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onReceive(Context context, Bundle bundle) {
         this.context = context;
-        String azureMessage = bundle.getString("msg");
 
-        if (isCriticalWaterLevel(azureMessage))
-            sendNotification(azureMessage);
+        initializeHandlerData();
 
-        updateCharts(azureMessage);
+        String level = bundle.getString("level");
+        String idTank = bundle.getString("idTank");
+        String tankName = "";
+
+        for (Tank tank: _tanks) {
+            if (tank.getId().equals(idTank)){
+                tankName = tank.getName();
+                break;
+            }
+        }
+
+
+        if (isCriticalWaterLevel(idTank, level))
+            sendNotification(tankName, level);
+
+        updateCharts(level);
     }
 
-    private boolean isCriticalWaterLevel(String azureMessage) {
+    private boolean isCriticalWaterLevel(String idTank, String level) {
         //Nós medimos o nível de criticidade de nível de água de acordo com quantos centimetros cairam
         //do nível total do reservatório de água.
 
-        return Integer.parseInt(azureMessage) >= _criticalWaterLevel;
+        return Integer.parseInt(level) >= _criticalsLevels.get(idTank);
 
     }
 
@@ -56,7 +95,7 @@ public class MyHandler extends NotificationsHandler {
     }
 
 
-    private void sendNotification(String msg) {
+    private void sendNotification(String nameTank, String level) {
         mNotificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -68,10 +107,10 @@ public class MyHandler extends NotificationsHandler {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Nível de água muito baixo!")
+                        .setContentTitle("Nível de água em " + nameTank + " muito baixo!")
                         .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(msg))
-                        .setContentText(msg)
+                                .bigText(level))
+                        .setContentText(level)
                         .setSound(notificationSound);
 
         mBuilder.setContentIntent(contentIntent);

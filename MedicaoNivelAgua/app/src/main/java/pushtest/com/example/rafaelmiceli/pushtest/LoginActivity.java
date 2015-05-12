@@ -131,8 +131,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 String userId = intent.getStringExtra("userId");
                 String token = intent.getStringExtra("token");
 
-                userService.saveUserInMemory(userId, token, context);
-                //notificationService.registerWithNotificationHubs();
+                userService.saveUserDataInMemory(userId, token, client, context);
 
                 Set<String> clients = new HashSet<>();
                 clients.add(client.getName());

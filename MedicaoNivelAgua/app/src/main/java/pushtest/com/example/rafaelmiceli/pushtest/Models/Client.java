@@ -3,12 +3,13 @@ package pushtest.com.example.rafaelmiceli.pushtest.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Rafael on 24/04/2015.
  */
-public class Client implements Parcelable {
+public class Client implements Parcelable, Serializable {
 
     public String name;
     private ArrayList<Tank> tanks;

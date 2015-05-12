@@ -3,8 +3,11 @@ package pushtest.com.example.rafaelmiceli.pushtest.Services;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.io.IOException;
+
 import pushtest.com.example.rafaelmiceli.pushtest.Models.Client;
 import pushtest.com.example.rafaelmiceli.pushtest.Models.User;
+import pushtest.com.example.rafaelmiceli.pushtest.Repositories.InternalStorage;
 import pushtest.com.example.rafaelmiceli.pushtest.Repositories.UserCloudRepository;
 
 /**
@@ -26,12 +29,23 @@ public class UserService {
         return user;
     }
 
-    public void saveUserInMemory(String userId, String token, Context context) {
-        SharedPreferences settings = context.getSharedPreferences("Client", 0);
+    public void saveUserDataInMemory(String userId, String token, Client client, Context context) {
+        SharedPreferences settings = context.getSharedPreferences("user", 0);
         SharedPreferences.Editor preferencesEditor = settings.edit();
         preferencesEditor.putString("userId", userId);
         preferencesEditor.putString("token", token);
         preferencesEditor.commit();
+
+        User user = new User();
+        user.Client = client;
+        user.Token = token;
+        user.UserId = userId;
+
+        try {
+            InternalStorage.writeObject(context, "user", user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

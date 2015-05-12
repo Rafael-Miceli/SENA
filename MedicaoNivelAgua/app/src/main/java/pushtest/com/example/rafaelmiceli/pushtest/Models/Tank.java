@@ -3,10 +3,12 @@ package pushtest.com.example.rafaelmiceli.pushtest.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by Rafael on 24/04/2015.
  */
-public class Tank implements Parcelable {
+public class Tank implements Parcelable, Serializable {
 
     private String Name;
     private String Id;

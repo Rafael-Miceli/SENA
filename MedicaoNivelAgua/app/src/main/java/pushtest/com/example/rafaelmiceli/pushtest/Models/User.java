@@ -1,10 +1,13 @@
 package pushtest.com.example.rafaelmiceli.pushtest.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Rafael on 24/04/2015.
  */
-public class User {
+public class User implements Serializable {
 
-    public Client client;
-    public String login;
+    public Client Client;
+    public String UserId;
+    public String Token;
 }
