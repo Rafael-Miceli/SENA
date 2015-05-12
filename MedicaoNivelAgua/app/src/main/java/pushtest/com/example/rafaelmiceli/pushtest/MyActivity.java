@@ -8,10 +8,13 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -26,12 +29,19 @@ import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.TableJsonQueryCallback;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import pushtest.com.example.rafaelmiceli.pushtest.Models.Tank;
+import pushtest.com.example.rafaelmiceli.pushtest.Slider.TankPageAdapter;
 
 
-public class MyActivity extends Activity {
+public class MyActivity extends FragmentActivity {
 
     protected BarChart mChart;
-    private Context mContext = this;
+    private Context context = this;
+
+    TankPageAdapter mTankPageAdapter;
+    ViewPager mViewPager;
     private TextView mTxtCmDown;
 
     @Override
@@ -39,46 +49,15 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        mChart = (BarChart) findViewById(R.id.chart1);
+        ArrayList<Tank> tanks = getIntent().getExtras().getParcelableArrayList("tanks");
 
-        mTxtCmDown = (TextView) findViewById(R.id.txtCmDown);
+        mTankPageAdapter = new TankPageAdapter(getSupportFragmentManager(), context, tanks);
 
-        mChart.setDescription("");
-        mChart.setDrawValueAboveBar(true);
-        mChart.setMaxVisibleValueCount(2);
-        mChart.setPinchZoom(false);
-        mChart.setDrawGridBackground(false);
-        mChart.setValueTextSize(10f);
-
-        Typeface tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTypeface(tf);
-        xAxis.setDrawGridLines(false);
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTypeface(tf);
-        leftAxis.setLabelCount(8);
-
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        rightAxis.setTypeface(tf);
-        rightAxis.setLabelCount(8);
-
-        mChart.setValueFormatter(new MyValueFormatter());
-
-        mChart.setValueTypeface(tf);
-
-        Integer value = getLatestWaterDistance();
-
-        setData(value);
-
-        Legend l = mChart.getLegend();
-        l.setLegendLabels(new String[] {"Nível d'água"});
-        l.setEnabled(true);
-
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mTankPageAdapter);
     }
+
+
 
     private void setData(float range) {
 
@@ -100,6 +79,9 @@ public class MyActivity extends Activity {
 
         mChart.setData(data);
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -123,63 +105,4 @@ public class MyActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public Integer getLatestWaterDistance() {
-
-        final Integer[] latestWaterDistance = {0};
-
-        WaterLevelService.getInstance(this).getLatestLevelFromAzure(new TableJsonQueryCallback() {
-            @Override
-            public void onCompleted(JsonElement jsonElement, int i, Exception e, ServiceFilterResponse serviceFilterResponse) {
-                try {
-                    if (e != null) {
-                        return;
-                    }
-
-                    JsonArray results = jsonElement.getAsJsonArray();
-
-
-                    for (JsonElement item : results){
-
-                       latestWaterDistance[0] = item.getAsJsonObject().getAsJsonPrimitive("Nivel").getAsInt();
-                    }
-
-                    updateViews(latestWaterDistance[0]);
-                }
-                catch (Exception exception) {
-                }
-            }
-        });
-
-        return 200;
-    }
-
-    public void updateViews(Integer latestWaterDistance) {
-        setData((200 - latestWaterDistance));
-        mTxtCmDown.setText(latestWaterDistance.toString());
-        mChart.invalidate();
-        mTxtCmDown.invalidate();
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        mContext.registerReceiver(mMessageReceiver, new IntentFilter("water_level"));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mContext.unregisterReceiver(mMessageReceiver);
-    }
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String message = intent.getStringExtra("azureMessage");
-
-            updateViews(Integer.parseInt(message));
-        }
-    };
 }

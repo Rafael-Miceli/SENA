@@ -1,42 +1,51 @@
 package pushtest.com.example.rafaelmiceli.pushtest;
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.JsonObject;
-import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.TableJsonOperationCallback;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-public class LoginActivity extends Activity implements View.OnClickListener {
+import javax.inject.Inject;
 
-    private final String TAG = "MainActivity";
+import pushtest.com.example.rafaelmiceli.pushtest.BaseActivities.BaseActivity;
+import pushtest.com.example.rafaelmiceli.pushtest.Models.Client;
+import pushtest.com.example.rafaelmiceli.pushtest.Services.UserService;
+
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
+
+    private final String TAG = "LoginActivity";
+
+    @Inject
+    UserService userService;
 
     private Button login_button;
-    protected AuthService mAuthService;
+    protected NotificationService notificationService;
 
     private EditText mTxtUsername;
     private EditText mTxtPassword;
     private ProgressBar progressBar;
 
-    private Context mContext = this;
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuthService = AuthService.getInstance(this);
+        notificationService = NotificationService.getInstance(this);
 
         mTxtUsername = (EditText) findViewById(R.id.editTextLogin);
         mTxtPassword = (EditText) findViewById(R.id.editTextPassword);
@@ -81,22 +90,14 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             return false;
         }
 
-        try {
-            mAuthService.login(mTxtUsername.getText().toString(), mTxtPassword.getText().toString(), new TableJsonOperationCallback() {
-                @Override
-                public void onCompleted(JsonObject jsonObject, Exception exception,
-                                        ServiceFilterResponse response) {
-                    try {
+        try{
 
-                        if (exception == null) {
-                            //If they've registered successfully, we'll save and set the userdata and then
-                            //show the logged in activity
-                            mAuthService.setUserAndSaveData(jsonObject);
-                            Intent loggedInIntent = new Intent(getApplicationContext(), MyActivity.class);
-                            startActivity(loggedInIntent);
-                        }
-                    } catch (Exception ex) {
-                        Toast.makeText(mContext, "Falha com realização de login: Verifique sua conexão com a Internet", Toast.LENGTH_LONG).show();
+            userService.login(mTxtUsername.getText().toString(), mTxtPassword.getText().toString());
+
+        }
+        catch (Exception ex) {
+            Log.e(TAG, "Error loggin in em callback: " + ex.getMessage());
+                        Toast.makeText(context, "Falha com realização de login: Verifique sua conexão com a Internet", Toast.LENGTH_LONG).show();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -104,16 +105,59 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                 login_button.setEnabled(true);
                             }
                         });
-                    }
-                }
-            });
-        }
-        catch (Exception ex) {
-            Toast.makeText(mContext, "Falha com realização de login: Verifique sua conexão com a Internet", Toast.LENGTH_LONG).show();
+
             return false;
         }
 
         return true;
     }
 
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+                Client client = intent.getParcelableExtra("client");
+
+                if (client == null) {
+                    Toast.makeText(context, "Falha com realização de login: e-mail ou senha incorretos", Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                    login_button.setEnabled(true);
+                    return;
+                }
+
+                String userId = intent.getStringExtra("userId");
+                String token = intent.getStringExtra("token");
+
+                userService.saveUserDataInMemory(userId, token, client, context);
+
+                Set<String> clients = new HashSet<>();
+                clients.add(client.getName());
+
+                notificationService.subscribeToClient(clients);
+
+                Intent loggedInIntent = new Intent(getApplicationContext(), MyActivity.class);
+                loggedInIntent.putExtra("tanks", client.getTanks());
+                startActivity(loggedInIntent);
+            }
+            catch (Exception ex) {
+                Toast.makeText(context, "Falha com realização de login: erro interno", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                login_button.setEnabled(true);
+            }
+
+        }
+    };
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        context.registerReceiver(messageReceiver, new IntentFilter("Login"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        context.unregisterReceiver(messageReceiver);
+    }
 }

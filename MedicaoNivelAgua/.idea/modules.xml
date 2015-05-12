@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MPChartLib/MPChartLib.iml" filepath="$PROJECT_DIR$/MPChartLib/MPChartLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/MedicaoNivelAgua.iml" filepath="$PROJECT_DIR$/MedicaoNivelAgua.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PushTest.iml" filepath="$PROJECT_DIR$/PushTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/notification-hubs-0.4/notification-hubs-0.4.iml" filepath="$PROJECT_DIR$/notification-hubs-0.4/notification-hubs-0.4.iml" />
       <module fileurl="file://$PROJECT_DIR$/notifications-1.0.1/notifications-1.0.1.iml" filepath="$PROJECT_DIR$/notifications-1.0.1/notifications-1.0.1.iml" />
