@@ -118,24 +118,6 @@ public class AuthService {
         }
     }
 
-    public void setUserAndSaveData(JsonObject jsonObject) {
-        mNotificationService.registerWithNotificationHubs();
-
-        String userId = jsonObject.getAsJsonPrimitive("userId").getAsString();
-        String token = jsonObject.getAsJsonPrimitive("token").getAsString();
-        String client = jsonObject.getAsJsonPrimitive("client").getAsString();
-
-        WaterLevelService.getInstance(mContext).setClientTableData(client);
-
-        Set<String> clients = new HashSet<>();
-        clients.add(client);
-
-        mNotificationService.subscribeToClient(clients);
-
-        setUserData(userId, token);
-        saveUserData();
-    }
-
     public void saveUserData() {
         SharedPreferences settings = mContext.getSharedPreferences("UserData", 0);
         SharedPreferences.Editor preferencesEditor = settings.edit();

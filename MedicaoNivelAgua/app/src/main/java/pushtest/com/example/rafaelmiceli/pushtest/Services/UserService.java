@@ -48,4 +48,15 @@ public class UserService {
         }
     }
 
+    public User getUserInMemory(Context context) {
+        try {
+            return (User)InternalStorage.readObject(context, "user");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

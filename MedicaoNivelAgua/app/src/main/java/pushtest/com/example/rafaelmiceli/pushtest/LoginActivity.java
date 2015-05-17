@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.gc.materialdesign.views.ButtonRectangle;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +25,9 @@ import javax.inject.Inject;
 
 import pushtest.com.example.rafaelmiceli.pushtest.BaseActivities.BaseActivity;
 import pushtest.com.example.rafaelmiceli.pushtest.Models.Client;
+import pushtest.com.example.rafaelmiceli.pushtest.Models.Tank;
+import pushtest.com.example.rafaelmiceli.pushtest.Models.User;
+import pushtest.com.example.rafaelmiceli.pushtest.Repositories.InternalStorage;
 import pushtest.com.example.rafaelmiceli.pushtest.Services.UserService;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -31,7 +37,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Inject
     UserService userService;
 
-    private Button login_button;
+    private ButtonRectangle login_button;
     protected NotificationService notificationService;
 
     private EditText mTxtUsername;
@@ -50,11 +56,41 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         mTxtUsername = (EditText) findViewById(R.id.editTextLogin);
         mTxtPassword = (EditText) findViewById(R.id.editTextPassword);
 
-        login_button = (Button)findViewById(R.id.button);
+        login_button = (ButtonRectangle)findViewById(R.id.button);
         login_button.setOnClickListener(this);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        //verifyUserAlreadyLoggedIn();
     }
+
+    private void verifyUserAlreadyLoggedIn() {
+        SharedPreferences settings = context.getSharedPreferences("user", 0);
+
+
+        String token = settings.getString("token", "");
+        if (!token.isEmpty()){
+
+            User user = userService.getUserInMemory(context);
+
+            if (user == null)
+                return;
+
+            ArrayList<Tank> tanksWithLevelsUpdated = updateMyTanksLevel(user.Client.getTanks());
+
+            Intent loggedInIntent = new Intent(getApplicationContext(), MyActivity.class);
+            loggedInIntent.putExtra("tanks", tanksWithLevelsUpdated);
+            startActivity(loggedInIntent);
+        }
+    }
+
+    private ArrayList<Tank> updateMyTanksLevel(ArrayList<Tank> tanks) {
+
+
+
+        return null;
+    }
+
 
     @Override
     public void onClick(final View v) {

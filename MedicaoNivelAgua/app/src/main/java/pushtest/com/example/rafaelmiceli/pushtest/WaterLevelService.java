@@ -47,15 +47,6 @@ public class WaterLevelService {
         }
     }
 
-    public void setClientTableData(String clientTableDataName) {
-        mClientName = clientTableDataName;
-        mClientTableData = mMobileServiceClient.getTable(clientTableDataName);
-    }
-
-    public void setTanksFromCloud(){
-
-    }
-
 
     public void getLatestLevelFromAzure(final String tankId, final TableJsonQueryCallback callback){
         new AsyncTask<Void, Void, Void>() {
