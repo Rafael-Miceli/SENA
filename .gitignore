@@ -24,3 +24,6 @@ proguard/
 
 # Log Files
 *.log
+
+#release report file
+MedicaoNivelAgua/app/manifest-merger-release-report.txt
