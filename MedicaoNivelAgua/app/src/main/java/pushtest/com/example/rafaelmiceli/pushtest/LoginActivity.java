@@ -61,7 +61,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        //verifyUserAlreadyLoggedIn();
+        verifyUserAlreadyLoggedIn();
     }
 
     private void verifyUserAlreadyLoggedIn() {
@@ -85,10 +85,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private ArrayList<Tank> updateMyTanksLevel(ArrayList<Tank> tanks) {
-
-
-
-        return null;
+        return tanks;
     }
 
 

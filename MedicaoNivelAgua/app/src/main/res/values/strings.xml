@@ -5,6 +5,6 @@
     <string name="title_activity_login">S.E.N.A.</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Configurações</string>
-    <string name="action_logout">Logout</string>
+    <string name="action_logout">Sair</string>
 
 </resources>

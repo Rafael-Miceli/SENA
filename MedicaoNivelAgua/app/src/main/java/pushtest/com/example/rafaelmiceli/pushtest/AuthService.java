@@ -132,7 +132,7 @@ public class AuthService {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
         //Clear the user id and token from the shared preferences
-        SharedPreferences settings = mContext.getSharedPreferences("UserData", 0);
+        SharedPreferences settings = mContext.getSharedPreferences("user", 0);
         SharedPreferences.Editor preferencesEditor = settings.edit();
         preferencesEditor.clear();
         preferencesEditor.commit();
