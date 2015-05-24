@@ -27,3 +27,7 @@ proguard/
 
 #release report file
 MedicaoNivelAgua/app/manifest-merger-release-report.txt
+
+#WebApp
+.vs/
+*.user
