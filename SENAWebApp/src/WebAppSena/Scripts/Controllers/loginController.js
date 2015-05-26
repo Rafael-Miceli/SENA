@@ -11,14 +11,31 @@
         /* jshint validthis:true */
         var vm = this;
         vm.title = 'loginController';
+        vm.willCreateNewPassword = false;
+        vm.userName;
+
+        function verifyWillCreateNewPassword() {
+            //vm.userName = GetUsernameFromQueryString();
+
+            loginService.verifyWillCreateNewPassword(vm.userName).then(
+                function (data) {
+                    vm.willCreateNewPassword = true;
+                });
+        }
 
         vm.login = function () {
             loginService.login(vm.email, vm.password);
         }
 
-        activate();
+        vm.createPassword = function () {
+            loginService.createNewPassword(vm.password).then()
+        }
 
-        function activate() { }
+
+
+        verifyWillCreateNewPassword();
+
+        
     }
 })();
 

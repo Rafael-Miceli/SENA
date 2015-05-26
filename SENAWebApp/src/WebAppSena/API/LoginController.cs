@@ -27,8 +27,15 @@ namespace WebAppSena.API
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]string password)
         {
+            //Enviar senha para o Azure
+            //No azure necessário criar um novo post somente para criar a senha do usuário
+            //Validar se senha do usuário estiver nula que ele deve criar a senha
+
+            //Se criou senha e tudo deu certo deve invalidr o link enviado
+
+            //Criar o link 
         }
 
         // PUT api/values/5
