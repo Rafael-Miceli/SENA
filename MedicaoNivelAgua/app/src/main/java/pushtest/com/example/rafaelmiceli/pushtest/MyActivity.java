@@ -31,56 +31,44 @@ import com.microsoft.windowsazure.mobileservices.TableJsonQueryCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import pushtest.com.example.rafaelmiceli.pushtest.BaseActivities.BaseFragmentActivity;
 import pushtest.com.example.rafaelmiceli.pushtest.Models.Tank;
+import pushtest.com.example.rafaelmiceli.pushtest.Models.User;
+import pushtest.com.example.rafaelmiceli.pushtest.Services.UserService;
 import pushtest.com.example.rafaelmiceli.pushtest.Slider.TankPageAdapter;
 
 
-public class MyActivity extends FragmentActivity {
+public class MyActivity extends BaseFragmentActivity {
 
-    protected BarChart mChart;
     private Context context = this;
 
     TankPageAdapter mTankPageAdapter;
     ViewPager mViewPager;
-    private TextView mTxtCmDown;
+
+    @Inject
+    UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        ArrayList<Tank> tanks = getIntent().getExtras().getParcelableArrayList("tanks");
+        ArrayList<Tank> tanks = null;
+
+        if (getIntent().getExtras() != null)
+            tanks = getIntent().getExtras().getParcelableArrayList("tanks");
+        else {
+            User user = userService.getUserInMemory(context);
+            tanks = user.Client.getTanks();
+        }
 
         mTankPageAdapter = new TankPageAdapter(getSupportFragmentManager(), context, tanks);
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mTankPageAdapter);
     }
-
-
-
-    private void setData(float range) {
-
-        ArrayList<String> xVals = new ArrayList<String>();
-
-        xVals.add("Reservatório");
-
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-        yVals1.add(new BarEntry(range, 0));
-
-        BarDataSet set1 = new BarDataSet(yVals1, "Nível d'água");
-        set1.setBarSpacePercent(35f);
-
-        ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
-        dataSets.add(set1);
-
-        BarData data = new BarData(xVals, dataSets);
-
-        mChart.setData(data);
-    }
-
-
 
 
     @Override

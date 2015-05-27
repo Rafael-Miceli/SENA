@@ -20,7 +20,7 @@ import pushtest.com.example.rafaelmiceli.pushtest.Wrapper.WrappedMobileServiceJs
 /**
  * Created by Rafael on 05/05/2015.
  */
-@Module(library = true, injects = {LoginActivity.class})
+@Module(library = true, injects = {LoginActivity.class, MyActivity.class})
 public class ApplicationModule {
 
     private Context context;
