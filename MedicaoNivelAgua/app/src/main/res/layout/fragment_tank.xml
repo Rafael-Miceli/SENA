@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
     android:background="#E3F2FD"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1">
 
 
     <TextView
@@ -19,32 +21,24 @@
         android:id="@+id/chart1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="80"
         android:layout_below="@+id/txtTitle"
-        android:layout_above="@+id/txtCmDown"
+        android:layout_above="@+id/tvLastRead"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"/>
 
-    <TextView
-        android:id="@+id/txtCmDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="54dp"
-        android:layout_marginRight="5dp"
-        android:layout_alignParentBottom="true"
-        android:text="0"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
-        android:id="@+id/tvXMax"
-        android:layout_width="match_parent"
+        android:id="@+id/tvLastRead"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/txtCmDown"
-        android:layout_alignParentRight="true"
-        android:text="cm abaixo do nível máximo"
-        android:layout_marginBottom="54dp"
+        android:layout_below="@id/chart1"
+        android:text="Última leitura de nível: "
         android:layout_marginRight="10dp"
-        android:gravity="left"
+        android:layout_marginBottom="5dp"
         android:layout_alignParentBottom="true"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
 
 </LinearLayout>

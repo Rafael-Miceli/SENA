@@ -16,7 +16,7 @@
         function verifyWillCreateNewPassword(userId) {
             var deferred = $q.defer();
 
-            $http.get('http://localhost:50747/Api/User/GetUser?userId=' + userId)
+            $http.get('http://mjr.com.br/Api/User/GetUser?userId=' + userId)
                 .success(function(data) {
                     deferred.resolve(data);
                 })
@@ -28,17 +28,17 @@
         }
 
         function createMjrSitePassword(user) {
-            //var deferred = $q.defer();
+            var deferred = $q.defer();
 
-            //$http.post('http://localhost:50747/Api/User/ChangeUserPassword', user)
-            //    .success(function (data) {
-            //        deferred.resolve(data);
-            //    })
-            //    .error(function (data) {
-            //        deferred.reject(data);
-            //    });
+            $http.post('http://mjr.com.br/Api/User/ChangeUserPassword', user)
+                .success(function (data) {
+                    deferred.resolve(data);
+                })
+                .error(function (data) {
+                    deferred.reject(data);
+                });
 
-            //return deferred.promise;
+            return deferred.promise;
         }
 
         return {

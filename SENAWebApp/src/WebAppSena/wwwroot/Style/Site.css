@@ -206,3 +206,14 @@ input:focus ~ .highlight {
     opacity: 0;
   }
 }
+
+#loading-indicator {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64px;
+  height: 64px;
+  margin-left: -32px;
+  margin-top: -32px;
+  border: 0;
+}

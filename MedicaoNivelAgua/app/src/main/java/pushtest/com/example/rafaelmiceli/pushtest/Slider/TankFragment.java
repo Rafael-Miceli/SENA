@@ -20,10 +20,16 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import pushtest.com.example.rafaelmiceli.pushtest.MyValueFormatter;
 import pushtest.com.example.rafaelmiceli.pushtest.R;
+import pushtest.com.example.rafaelmiceli.pushtest.Repositories.InternalStorage;
 
 /**
  * Created by Rafael on 06/05/2015.
@@ -33,12 +39,14 @@ public class TankFragment extends Fragment {
     public final static String TANK_NAME = "Reservatorio";
     public final static String TANK_CRITICAL_LEVEL = "ValorCritico";
     public final static String TANK_LEVEL = "Valor";
+    public final static String TANK_LAST_LEVEL = "Última leitura de nível: Dia ";
+
 
     private String mTankName;
     private int mTankValue;
 
     protected BarChart mChart;
-    private TextView mTxtCmDown;
+    private TextView mTxtLastRead;
     private TextView txtTitle;
 
     private Context context;
@@ -75,7 +83,7 @@ public class TankFragment extends Fragment {
 
     private void initializeControls(View theView) {
         mChart = (BarChart)  theView.findViewById(R.id.chart1);
-        mTxtCmDown = (TextView) theView.findViewById(R.id.txtCmDown);
+        mTxtLastRead = (TextView) theView.findViewById(R.id.tvLastRead);
         txtTitle = (TextView) theView.findViewById(R.id.txtTitle);
     }
 
@@ -145,12 +153,12 @@ public class TankFragment extends Fragment {
 
     private void displayValues(final String tankName, int tankValue) {
         txtTitle.setText("Queda de " + tankName + " em cm");
-        //mTankValueTextView.setText(String.valueOf(tankValue));
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        updateLastRead();       
         context.registerReceiver(mMessageReceiver, new IntentFilter("water_level"));
     }
 
@@ -174,8 +182,20 @@ public class TankFragment extends Fragment {
 
     public void updateViews(Integer latestWaterDistance) {
         setData((200 - latestWaterDistance), mTankName);
-        //mTxtCmDown.setText(latestWaterDistance.toString());
         mChart.invalidate();
-        //mTxtCmDown.invalidate();
+        updateLastRead();
+    }
+
+    private void updateLastRead() {
+        String currentDateTimeString = null;
+        try {
+            currentDateTimeString = InternalStorage.readObject(context, "lastRead").toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        mTxtLastRead.setText(TANK_LAST_LEVEL + currentDateTimeString);
+        mTxtLastRead.invalidate();
     }
 }

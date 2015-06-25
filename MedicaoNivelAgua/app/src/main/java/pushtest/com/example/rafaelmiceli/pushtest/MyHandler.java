@@ -14,7 +14,9 @@ import android.util.Pair;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,6 +70,14 @@ public class MyHandler extends NotificationsHandler {
                 tankName = tank.getName();
                 break;
             }
+        }
+
+        String currentDateTimeString = new SimpleDateFormat("dd - HH:mm").format(new Date());
+
+        try {
+            InternalStorage.writeObject(context, "lastRead", currentDateTimeString);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         if (isCriticalWaterLevel(idTank, level))

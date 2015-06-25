@@ -37,7 +37,7 @@ public class NotificationService {
 
         gcm = GoogleCloudMessaging.getInstance(mContext);
 
-        String connectionString = "Endpoint=sb://arduinoapphub-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=c2D7nWLIc+3h8CCrLvsPvpXUQkrmmSGJe9UdWiL/xcU=";
+        String connectionString = "Endpoint=sb://arduinoapphub2-ns.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=wGpbXy3zlfIgaJKQybw0xdTavi+TZUlLby6jfqVmfFM=";
         hub = new NotificationHub("arduinoapphub", connectionString, mContext);
     }
 
@@ -86,19 +86,4 @@ public class NotificationService {
         }.execute(null, null, null);
     }
 
-    @SuppressWarnings("unchecked")
-    public void registerWithNotificationHubs() {
-        new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object... params) {
-                try {
-                    String regid = gcm.register(SENDER_ID);
-                    hub.register(regid);
-                } catch (Exception e) {
-                    return e;
-                }
-                return null;
-            }
-        }.execute(null, null, null);
-    }
 }

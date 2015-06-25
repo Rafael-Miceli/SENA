@@ -1,13 +1,9 @@
 ﻿(function () {
     'use strict';
 
-    angular.module('senaApp').controller('loginController', ['loginService', '$routeParams', loginController]);
+    angular.module('senaApp').controller('loginController', ['loginService', '$routeParams', '$location', loginController]);
 
-    console.log("Out controller");
-
-    function loginController(loginService, $routeParams) {
-
-        console.log("Inside Controller");
+    function loginController(loginService, $routeParams, $location) {
 
         var vm = this;
         vm.title = 'loginController';
@@ -15,6 +11,8 @@
         vm.user = {};
 
         function verifyWillCreateNewPassword() {
+            vm.loading = true;
+
             vm.userId = $routeParams.userId;
 
             if (vm.userId) {
@@ -22,13 +20,20 @@
 
                 loginService.verifyWillCreateNewPassword(vm.userId).then(
                     function (data) {
+                        console.log(data);
                         vm.user = data;
-                        vm.willCreateNewPassword = vm.user.createNewPassword;
+                        vm.willCreateNewPassword = vm.user.CreateNewPassword;
+
+                        vm.loading = false;
                     });
             }
+
+            console.log(vm.willCreateNewPassword);
         }
 
         vm.createPassword = function () {
+            vm.loading = true;
+
             //Create user in Azure
             var client = new WindowsAzure.MobileServiceClient(
             "https://arduinoapp.azure-mobile.net/",
@@ -37,25 +42,37 @@
             var account = { username: vm.user.Username, cliente: vm.user.CompanyName, password: vm.password }
             var tableAccounts = client.getTable("accounts");
 
-            tableAccounts.insert(account);
+            console.log("Antes de inserir no azure");
 
-            //get new row id
-            var senaId = "";
+            tableAccounts.insert(account).done(function(result) {
+                console.log("Após inserir no azure");
+                console.log(result);
 
-            tableAccounts.where({ username: vm.user.Username }).read().done(function(results) {
-                console.log(results);
+                //get new row id
+                var senaId = "";
 
-                senaId = results[0].id;
+                tableAccounts.where({ username: vm.user.Username }).read().done(function (results) {
+                    console.log(results);
+
+                    senaId = results[0].id;
+                    console.log("SenaId", senaId);
+
+                    console.log("Antes de criar no MJR");
+                    //Set new password to MjrSite
+                    vm.user.UserSenaId = senaId;
+                    vm.user.NewPassword = vm.password;
+                    loginService.createMjrSitePassword(vm.user).then(
+                        function (data) {
+                            vm.loading = false;
+                            console.log("Após criar no MJR");
+
+                            //Redirect to success page        
+                            $location.path("/passwordSuccess");
+
+                        });
+                });
             });
 
-            //Set new password to MjrSite
-            vm.user.UserSenaId = senaId;
-            vm.user.NewPassword = vm.password;
-            loginService.createMjrSitePassword(vm.user).then(
-                function(data) {
-                    //Redirect to success page        
-
-                });
         }
 
 
